@@ -6,6 +6,8 @@ import json
 from unittest import mock
 
 import pytest
+
+pytest.importorskip("openai")
 from openai.types.chat import ChatCompletionMessage
 
 from dbt_osmosis.core.exceptions import LLMConfigurationError, LLMResponseError

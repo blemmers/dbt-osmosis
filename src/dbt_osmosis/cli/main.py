@@ -57,11 +57,15 @@ def cli() -> None:
     pass
 
 
-def test_llm_connection(llm_client=None) -> None:
+def test_llm_connection() -> None:
     """Test the connection to the LLM client."""
     import os
 
-    from dbt_osmosis.core.llm import get_llm_client
+    try:
+        from dbt_osmosis.core.llm import get_llm_client
+    except ImportError as exc:
+        click.echo(str(exc))
+        return
 
     llm_client = os.getenv("LLM_PROVIDER")
     if not llm_client:
@@ -70,7 +74,11 @@ def test_llm_connection(llm_client=None) -> None:
         )
         return
 
-    client, model_engine = get_llm_client()
+    try:
+        client, model_engine = get_llm_client()
+    except ImportError as exc:
+        click.echo(str(exc))
+        return
     if not client or not model_engine:
         click.echo(
             f"Connection ERROR: The environment variables for LLM provider {llm_client} are not set correctly."
@@ -86,10 +94,7 @@ def test_llm_connection(llm_client=None) -> None:
 def test_llm() -> None:
     """Test the connection to the LLM client"""
     logger.info("INFO: Invoking test_llm_connection...")
-    from dbt_osmosis.core.llm import get_llm_client
-
-    llm_client = get_llm_client()
-    test_llm_connection(llm_client)
+    test_llm_connection()
     click.echo("LLM client connection test completed.")
 
 
